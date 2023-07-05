@@ -11,7 +11,8 @@ namespace BookReservationSystem.Core.Entities
     {
         public string Title { get; set; }
         public string Author { get; set; }
-        public IReadOnlyList<ReservationStatus> Books { get; set; } = new List<ReservationStatus>();
+        public Reservation Reservation { get; set; }
+        public IReadOnlyList<ReservationStatus> ReservationHistory { get; set; }
 
         public Book(string title, string author) 
         {
