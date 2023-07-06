@@ -30,7 +30,7 @@ namespace BookReservationSystem.API
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("SqlConnectionString");
-            connectionString = connectionString.Replace("|RootDirectory|", Environment.CurrentDirectory);
+            connectionString = connectionString.Replace("|DBDirectory|", Environment.CurrentDirectory.Replace("BookReservationSystem.API\\BookReservationSystem.API", "BookReservationSystem.Infrastructure\\BookReservationSystem.Infrastructure\\Data\\BookReservationSystemDB.mdf"));
             services.AddDbContext<BookReservationSystemContext>(options => options.UseSqlServer(connectionString));
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
