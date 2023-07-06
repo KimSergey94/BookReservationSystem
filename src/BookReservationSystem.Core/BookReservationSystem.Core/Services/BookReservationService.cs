@@ -27,7 +27,9 @@ namespace BookReservationSystem.Core.Services
         public async Task<bool> CancelBookReservation(int bookId)
         {
             var reservation = await _reservationRepository.GetByBookIdAsync(bookId);
-            return await _unitOfWork.Repository<Reservation>().DeleteAsync(reservation);
+            var result = await _unitOfWork.Repository<Reservation>().DeleteAsync(reservation);
+            await _unitOfWork.Complete();
+            return result;
         }
 
         public async Task<IList<GetAvailableBooksDTO>> GetAvailableBooks()
@@ -69,6 +71,7 @@ namespace BookReservationSystem.Core.Services
             {
                 var reservationStatus = await _unitOfWork.Repository<ReservationStatus>().AddAsync(new ReservationStatus(bookId, "reserved", comment));
                 await _unitOfWork.Repository<Reservation>().AddAsync(new Reservation(bookId, reservationStatus.Id));
+                await _unitOfWork.Complete();
                 result = true;
             }
             catch
