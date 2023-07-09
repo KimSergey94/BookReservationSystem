@@ -9,6 +9,7 @@ namespace BookReservationSystem.Core.DTOs
     public class GetReservationHistoryDTO
     {
         public int Id { get; set; }
+        public int BookId { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }
     }

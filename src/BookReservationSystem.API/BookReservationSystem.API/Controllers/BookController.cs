@@ -27,7 +27,7 @@ namespace BookReservationSystem.API.Controllers
             return Ok(await Task.Run(() => _bookCRUDService.Create(book)));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> Update(Book book)
         {
             return Ok(await Task.Run(() => _bookCRUDService.Update(book)));

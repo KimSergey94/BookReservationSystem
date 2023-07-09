@@ -26,9 +26,20 @@ namespace BookReservationSystem.Core.Services
 
         public async Task<bool> CancelBookReservation(int bookId)
         {
+            var isBookLegit = await IsBookLegit(bookId);
+            if (!isBookLegit) throw new Exception($"The book not found by id: {bookId}.");
             var reservation = await _reservationRepository.GetByBookIdAsync(bookId);
-            var result = await _unitOfWork.Repository<Reservation>().DeleteAsync(reservation);
-            await _unitOfWork.Complete();
+            if (reservation == null) throw new Exception("The book is not reserved.");
+
+            var result = false;
+            try
+            {
+                await _unitOfWork.Repository<Reservation>().DeleteAsync(reservation);
+                var reservationStatus = await _unitOfWork.Repository<ReservationStatus>().AddAsync(new ReservationStatus(bookId, "canceled reservation", ""));
+                await _unitOfWork.Complete();
+                result = true;
+            }
+            catch { throw; }
             return result;
         }
 
@@ -44,8 +55,6 @@ namespace BookReservationSystem.Core.Services
         {
             try
             {
-                var book = await _unitOfWork.Repository<Book>().GetByIdAsync(bookId);
-
                 var reservationStatuses = await _unitOfWork.Repository<ReservationStatus>().GetAllAsync();
                 var bookReservationStatuses = reservationStatuses.Where(reservationStatus => reservationStatus.BookId == bookId);
                 return MapperUtil.MapToGetReservationHistoryDTOList(bookReservationStatuses).ToList();
@@ -66,12 +75,26 @@ namespace BookReservationSystem.Core.Services
 
         public async Task<bool> ReserveBook(int bookId, string comment)
         {
+            var isBookLegit = await IsBookLegit(bookId);
+            if (!isBookLegit) throw new Exception($"The book not found by id: {bookId}.");
+            var isBookReserved = await IsBookReserved(bookId);
+            if (isBookReserved) throw new Exception("The book is already reserved.");
+
             var result = false;
             try
             {
                 var reservationStatus = await _unitOfWork.Repository<ReservationStatus>().AddAsync(new ReservationStatus(bookId, "reserved", comment));
-                await _unitOfWork.Repository<Reservation>().AddAsync(new Reservation(bookId, reservationStatus.Id));
                 await _unitOfWork.Complete();
+                try
+                {
+                    await _unitOfWork.Repository<Reservation>().AddAsync(new Reservation(bookId, reservationStatus.Id));
+                    await _unitOfWork.Complete();
+                }
+                catch
+                {
+                    await _unitOfWork.Repository<ReservationStatus>().DeleteAsync(reservationStatus);
+                    throw new Exception("Error during inserting reservation to database.");
+                }
                 result = true;
             }
             catch
@@ -79,6 +102,35 @@ namespace BookReservationSystem.Core.Services
                 throw;
             }
             return await Task.Run(()=> result);
+        }
+
+        public async Task<bool> IsBookReserved(int bookId)
+        {
+            var result = false;
+            try
+            {
+                var reservation = await _reservationRepository.GetByBookIdAsync(bookId);
+                if (reservation != null) result = true;
+            }
+            catch
+            {
+                throw;
+            }
+            return await Task.Run(() => result);
+        }
+        public async Task<bool> IsBookLegit(int bookId)
+        {
+            var result = false;
+            try
+            {
+                var book = await _unitOfWork.Repository<Book>().GetByIdAsync(bookId);
+                if (book != null) result = true;
+            }
+            catch
+            {
+                throw;
+            }
+            return await Task.Run(() => result);
         }
     }
 }

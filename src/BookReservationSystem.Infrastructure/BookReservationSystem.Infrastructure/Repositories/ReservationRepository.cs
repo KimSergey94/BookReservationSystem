@@ -13,6 +13,10 @@ namespace BookReservationSystem.Infrastructure.Repositories
     public class ReservationRepository : IReservationRepository
     {
         private readonly BookReservationSystemContext _bookReservationSystemContext;
+        public ReservationRepository(BookReservationSystemContext bookReservationSystemContext)
+        {
+            _bookReservationSystemContext = bookReservationSystemContext;
+        }
 
         public async Task<Reservation> GetByBookIdAsync(int bookId)
         {

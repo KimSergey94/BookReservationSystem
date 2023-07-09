@@ -44,5 +44,11 @@ namespace BookReservationSystem.API.Controllers
         {
             return Ok(await Task.Run(() => _bookReservationService.GetReservationHistory(bookId)));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> IsBookReserved(int bookId)
+        {
+            return Ok(await Task.Run(() => _bookReservationService.IsBookReserved(bookId)));
+        }
     }
 }

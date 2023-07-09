@@ -15,5 +15,7 @@ namespace BookReservationSystem.Core.Interfaces.Services
         Task<IList<GetReservedBooksDTO>> GetReservedBooks();
         Task<IList<GetAvailableBooksDTO>> GetAvailableBooks();
         Task<IList<GetReservationHistoryDTO>> GetReservationHistory(int bookId);
+        Task<bool> IsBookReserved(int bookId);
+        Task<bool> IsBookLegit(int bookId);
     }
 }

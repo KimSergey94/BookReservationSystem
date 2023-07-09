@@ -34,19 +34,19 @@ namespace BookReservationSystem.Core.Services
         public async Task<Book> Update(Book book)
         {
             var dbBook = await _unitOfWork.Repository<Book>().GetByIdAsync(book.Id);
+            if (dbBook == null) throw new Exception($"The book not found by id: {book.Id}.");
             dbBook.Author = book.Author;
             dbBook.Title = book.Title;
-            return await _unitOfWork.Repository<Book>().UpdateAsync(dbBook);
+            await _unitOfWork.Repository<Book>().UpdateAsync(dbBook);
+            await _unitOfWork.Complete();
+            return dbBook;
         }
 
         public async Task<bool> Delete(int bookId)
         {
             var book = await _unitOfWork.Repository<Book>().GetByIdAsync(bookId);
             var result = await _unitOfWork.Repository<Book>().DeleteAsync(book);
-            try
-            {
-                await _unitOfWork.Complete();
-            }
+            try { await _unitOfWork.Complete(); }
             catch { throw; }
             return result;
         }
