@@ -18,8 +18,6 @@ namespace BookReservationSystem.Infrastructure.Data.Config
         {
             builder.Property(p => p.Id).IsRequired();
             builder.Property(p => p.ReservationStatusId).IsRequired();
-            builder.HasOne(c => c.Book).WithMany().HasForeignKey(p => p.BookId).IsRequired();
-            builder.HasOne(c => c.ReservationStatus).WithMany().HasForeignKey(p => p.ReservationStatusId).IsRequired();
         }
     }
 }

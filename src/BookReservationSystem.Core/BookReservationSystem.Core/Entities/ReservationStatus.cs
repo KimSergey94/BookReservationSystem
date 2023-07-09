@@ -13,6 +13,7 @@ namespace BookReservationSystem.Core.Entities
         public Book Book { get; set; }
         public string Status { get; set; }
         public string Comment { get; set; }
+        public Reservation Reservation { get; set; }
 
         public ReservationStatus(int bookId, string status, string comment)
         {

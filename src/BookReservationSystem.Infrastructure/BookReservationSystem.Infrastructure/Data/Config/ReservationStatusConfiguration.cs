@@ -18,7 +18,7 @@ namespace BookReservationSystem.Infrastructure.Data.Config
         {
             builder.Property(p => p.Id).IsRequired();
             builder.Property(p => p.Status).IsRequired();
-            builder.HasOne(c => c.Book).WithMany().HasForeignKey(p => p.BookId).IsRequired();
+            builder.HasOne(c => c.Reservation).WithOne(x => x.ReservationStatus).HasForeignKey<Reservation>(x => x.ReservationStatusId).OnDelete(DeleteBehavior.NoAction).IsRequired();
         }
     }
 }

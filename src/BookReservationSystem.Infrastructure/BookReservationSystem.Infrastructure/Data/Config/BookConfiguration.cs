@@ -18,6 +18,9 @@ namespace BookReservationSystem.Infrastructure.Data.Config
         {
             builder.Property(p => p.Id).IsRequired();
             builder.Property(p => p.Title).IsRequired();
+            builder.Property(p => p.Author).IsRequired();
+            builder.HasMany(c => c.ReservationHistory).WithOne(x=>x.Book).HasForeignKey(x=>x.BookId);
+            builder.HasOne(c => c.Reservation).WithOne(x => x.Book).HasForeignKey<Reservation>(x=> x.BookId);
         }
     }
 }
