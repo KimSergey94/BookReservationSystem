@@ -31,8 +31,9 @@ namespace BookReservationSystem.API
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("SqlConnectionString");
-            connectionString = connectionString.Replace("|DBDirectory|", Environment.CurrentDirectory.Replace("BookReservationSystem.API\\BookReservationSystem.API", "BookReservationSystem.Infrastructure\\BookReservationSystem.Infrastructure\\Data\\BookReservationSystemDB.mdf"));
-            //DBFilesCreator.CreateSqlDatabaseFiles(Path.GetFileName(connectionString.Replace(";Integrated Security=SSPI;", "")), connectionString);
+            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            connectionString = connectionString.Replace("|DBDirectory|", assemblyLocation.Replace(Path.GetFileName(assemblyLocation), "") + "Data\\BookReservationSystemDB.mdf");
+
             services.AddDbContext<BookReservationSystemContext>(options => options.UseSqlServer(connectionString));
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
