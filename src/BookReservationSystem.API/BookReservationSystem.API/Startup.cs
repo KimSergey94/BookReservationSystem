@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +32,7 @@ namespace BookReservationSystem.API
         {
             string connectionString = Configuration.GetConnectionString("SqlConnectionString");
             connectionString = connectionString.Replace("|DBDirectory|", Environment.CurrentDirectory.Replace("BookReservationSystem.API\\BookReservationSystem.API", "BookReservationSystem.Infrastructure\\BookReservationSystem.Infrastructure\\Data\\BookReservationSystemDB.mdf"));
+            //DBFilesCreator.CreateSqlDatabaseFiles(Path.GetFileName(connectionString.Replace(";Integrated Security=SSPI;", "")), connectionString);
             services.AddDbContext<BookReservationSystemContext>(options => options.UseSqlServer(connectionString));
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();

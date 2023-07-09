@@ -22,4 +22,10 @@
     <ProjectReference Include="..\..\BookReservationSystem.Core\BookReservationSystem.Core\BookReservationSystem.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\BookReservationSystemDB.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
